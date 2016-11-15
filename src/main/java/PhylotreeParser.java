@@ -81,7 +81,7 @@ public class PhylotreeParser {
      * @param s
      * @return
      */
-    private int getLevel(String s){
+    public int getLevel(String s){
         int level = 0;
         for (int i = 0; i <= s.length(); i++){
             if(s.charAt(i) == ';'){
