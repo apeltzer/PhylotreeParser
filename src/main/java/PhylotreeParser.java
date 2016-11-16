@@ -70,6 +70,7 @@ public class PhylotreeParser {
 
         for(String array : entries){
             int index = getLevel(array);
+            String haplogroup = getHaplogroup(array);
             System.out.println(index + "\n");
 
         }
@@ -91,5 +92,18 @@ public class PhylotreeParser {
             }
         }
         return level;
+    }
+
+    /**
+     * Method to return hpalogroup string
+     * @param s
+     * @return
+     */
+    public String getHaplogroup(String s){
+        s.replaceFirst("^;","");
+        String[] splitted = s.split(";");
+        return splitted[0];
+
+
     }
 }
