@@ -74,6 +74,10 @@ public class PhylotreeParser {
         rootItem.setExpanded(true);
         List<String> index_array = new ArrayList();
 
+
+        // iterate post-order through tree
+        postOrder(rootItem);
+
         for(String array : entries){
             int index = getLevel(array);
             String haplogroup = getHaplogroup(array);
@@ -134,4 +138,14 @@ public class PhylotreeParser {
         return index_array.subList(0,level);
 
     }
+
+    public void postOrder(TreeItem root) {
+        if(root !=  null) {
+            postOrder(root.left);
+            postOrder(root.right);
+
+            // todo: do something with the node here
+        }
+    }
+
 }
