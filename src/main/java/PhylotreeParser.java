@@ -72,27 +72,51 @@ public class PhylotreeParser {
 
         TreeItem rootItem = new TreeItem("RSRS");
         rootItem.setExpanded(true);
-        List<String> index_array = new ArrayList();
+        List<TreeItem> tree_items = new ArrayList<TreeItem>();
 
 
         // iterate post-order through tree
-        postOrder(rootItem);
+        int currIndex = 0;
+        int formerIndex = 0;
 
-        for(String array : entries){
-            int index = getLevel(array);
+        for(String array : entries) {
+            currIndex = getLevel(array);
             String haplogroup = getHaplogroup(array);
-            index_array.add(haplogroup);
-        }
+            TreeItem<String> item = new TreeItem<>(haplogroup);
 
-       /* TreeView<String> tree = new TreeView<>(rootItem);
-        // enable multiple selection of leaves
-        tree.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        tree.getSelectionModel().selectedItemProperty().addListener((c, oldValue, newValue) -> {
-            if (newValue != null && !newValue.isLeaf()) {
-                Platform.runLater(() -> tree.getSelectionModel().clearSelection());
+            if(currIndex == 0) { // can only happen in the initialization phase (for L0, and L1'2'3'4'5'6')
+                rootItem.getChildren().add(item);
             }
-        });*/
 
+            if (currIndex > formerIndex) { //then we are going down one level
+                //TODO
+                tree_items.get(tree_items.size()-1).getChildren().add(item);
+                tree_items.add(item);
+                formerIndex = currIndex;
+
+            } else if (currIndex == formerIndex) { //then we are in the same level with our sibling node
+                  tree_items.get(tree_items.size()-1).getParent().getChildren().add(item);
+//                TreeItem<String> root = new TreeItem<String>("Iamgroot!");
+//                TreeItem<String> test = new TreeItem<String>("TestRoot");
+//                TreeItem<String> child1 = new TreeItem<String>("child1");
+//                ArrayList<TreeItem> itemlist = new ArrayList<TreeItem>();
+//                itemlist.add(root);
+//                itemlist.add(test);
+//                root.getChildren().add(test);
+//                int itemindex = itemlist.size() -1;
+//                itemlist.get(itemindex).getParent().getChildren().add(child1);
+//                System.out.println("Test");
+
+
+            } else if (currIndex < formerIndex) { // then we are done traversing and have to go one level up again
+                //TODO
+                formerIndex = currIndex;
+                List<TreeItem> back_me_up = tree_items;
+                tree_items = updateIndices(back_me_up,currIndex); // Update our "pointer" list
+            }
+
+
+        }
     }
 
     /**
@@ -133,18 +157,11 @@ public class PhylotreeParser {
      * @param level
      * @return
      */
-    public List<String> updateIndices(List<String> index_array, int level){
-        return index_array.subList(0,level);
+    public List<TreeItem> updateIndices(List<TreeItem> index_array, int level){
+        return index_array.subList(0,level+1); //sublist is (inclusive, exclusive)
 
     }
 
-    public void postOrder(TreeItem root) {
-        if(root !=  null) {
-       //     postOrder(root.left);
-       //     postOrder(root.right);
 
-            // todo: do something with the node here
-        }
-    }
 
 }
