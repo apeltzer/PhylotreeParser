@@ -1,8 +1,5 @@
 
-import javafx.application.Platform;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,6 +7,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by peltzer on 04/11/2016.
@@ -19,6 +18,7 @@ import java.util.List;
 public class PhylotreeParser {
     private BufferedReader bfr ;
     private FileReader fr;
+    private TreeItem<String> mtDnaTree;
 
     public static void main(String[] args) throws IOException {
         //need this for main access
@@ -33,12 +33,11 @@ public class PhylotreeParser {
 
 
     public PhylotreeParser(File input) throws IOException {
-        parseFile(input);
-        //TODO write output ?
+        this.mtDnaTree = parseFile(input);
     }
 
 
-    private void parseFile(File f) throws IOException {
+    private TreeItem<String> parseFile(File f) throws IOException {
         //We require a CSV file as input, get this by storign the HTML table (single file), open it in Excel as HTML -> save as CSV and you're done!
         //The ";" array size determines where to place a file correctly in our Tree
         fr = new FileReader(f);
@@ -78,14 +77,28 @@ public class PhylotreeParser {
         // iterate post-order through tree
         int currIndex = 0;
         int formerIndex = 0;
+        int counter = 0;
 
         for(String array : entries) {
             currIndex = getLevel(array);
-            String haplogroup = getHaplogroup(array);
-            TreeItem<String> item = new TreeItem<>(haplogroup);
+            String haplogroup_untrimmed = getHaplogroup(array);
+            String haplogroup = haplogroup_untrimmed.trim();
+            Pattern p = Pattern.compile("[ACTGactg]{1}[0-9]{1,5}[ACTGactg]{1}!{0,2}");
+            Matcher matcher = p.matcher(haplogroup);
+            TreeItem<String> item;
+
+
+            if(matcher.matches()){//Then  we skip that shit...
+                continue;
+            } else {
+                item = new TreeItem<String>(haplogroup);
+            }
+
 
             if(currIndex == 0) { // can only happen in the initialization phase (for L0, and L1'2'3'4'5'6')
                 rootItem.getChildren().add(item);
+                tree_items.add(item);
+                continue;
             }
 
             if (currIndex > formerIndex) { //then we are going down one level
@@ -94,16 +107,21 @@ public class PhylotreeParser {
                 formerIndex = currIndex;
 
             } else if (currIndex == formerIndex) { //then we are in the same level with our sibling node
-                  tree_items.get(tree_items.size()-1).getParent().getChildren().add(item);
+
+                tree_items.get(tree_items.size()-1).getParent().getChildren().add(item);
+
+
 
             } else if (currIndex < formerIndex) { // then we are done traversing and have to go one level up again
                 formerIndex = currIndex;
                 List<TreeItem> back_me_up = tree_items;
                 tree_items = updateIndices(back_me_up,currIndex); // Update our "pointer" list
+                tree_items.get(tree_items.size()-1).getChildren().add(item);
+
             }
-
-
         }
+
+        return rootItem;
     }
 
     /**
@@ -132,8 +150,6 @@ public class PhylotreeParser {
         String tmp = s.replaceFirst("^;*","");
         String[] splitted = tmp.split(";");
         return splitted[0];
-
-
     }
 
     /**
@@ -145,10 +161,18 @@ public class PhylotreeParser {
      * @return
      */
     public List<TreeItem> updateIndices(List<TreeItem> index_array, int level){
-        return index_array.subList(0,level+1); //sublist is (inclusive, exclusive)
-
+        if(level == 11) {
+            System.out.println("teschd!");
+        }
+        return index_array.subList(0,level); //sublist is (inclusive, exclusive)
     }
 
 
-
+    /**
+     * Returns our mtDNATree as TreeItem<String>
+     * @return
+     */
+    public TreeItem<String> getMtDnaTree() {
+        return mtDnaTree;
+    }
 }

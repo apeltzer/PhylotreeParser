@@ -18,6 +18,7 @@ public class PhylotreeTest {
         assertEquals(0, phyp.getLevel("test1234556"));
         assertEquals(2, phyp.getLevel(";;34234243"));
         assertEquals(5, phyp.getLevel(";;;;;L0d'"));
+        assertEquals(10, phyp.getLevel(";;;;;;;;;; A200G ;;;;;;;;;;;;;;;NA19311;EU092763\n"));
     }
 
     @Test
