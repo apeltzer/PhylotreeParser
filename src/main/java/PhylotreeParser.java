@@ -82,17 +82,16 @@ public class PhylotreeParser {
             int index = getLevel(array);
             String haplogroup = getHaplogroup(array);
             index_array.add(haplogroup);
-            System.out.println(index + "\n");
         }
 
-        TreeView<String> tree = new TreeView<>(rootItem);
+       /* TreeView<String> tree = new TreeView<>(rootItem);
         // enable multiple selection of leaves
         tree.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tree.getSelectionModel().selectedItemProperty().addListener((c, oldValue, newValue) -> {
             if (newValue != null && !newValue.isLeaf()) {
                 Platform.runLater(() -> tree.getSelectionModel().clearSelection());
             }
-        });
+        });*/
 
     }
 
