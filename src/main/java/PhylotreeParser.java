@@ -89,27 +89,14 @@ public class PhylotreeParser {
             }
 
             if (currIndex > formerIndex) { //then we are going down one level
-                //TODO
                 tree_items.get(tree_items.size()-1).getChildren().add(item);
                 tree_items.add(item);
                 formerIndex = currIndex;
 
             } else if (currIndex == formerIndex) { //then we are in the same level with our sibling node
                   tree_items.get(tree_items.size()-1).getParent().getChildren().add(item);
-//                TreeItem<String> root = new TreeItem<String>("Iamgroot!");
-//                TreeItem<String> test = new TreeItem<String>("TestRoot");
-//                TreeItem<String> child1 = new TreeItem<String>("child1");
-//                ArrayList<TreeItem> itemlist = new ArrayList<TreeItem>();
-//                itemlist.add(root);
-//                itemlist.add(test);
-//                root.getChildren().add(test);
-//                int itemindex = itemlist.size() -1;
-//                itemlist.get(itemindex).getParent().getChildren().add(child1);
-//                System.out.println("Test");
-
 
             } else if (currIndex < formerIndex) { // then we are done traversing and have to go one level up again
-                //TODO
                 formerIndex = currIndex;
                 List<TreeItem> back_me_up = tree_items;
                 tree_items = updateIndices(back_me_up,currIndex); // Update our "pointer" list
