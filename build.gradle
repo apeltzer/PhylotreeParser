@@ -32,8 +32,8 @@ dependencies {
 
 jar {
     manifest {
-        attributes("Implementation-Title": "PhylotreeParser",
-                "Implementation-Version": version, "main-Class": "main.java.PhylotreeParser")
+        attributes("Implementation-Title": "PhyloTreeParser",
+                "Implementation-Version": version, "main-Class": "main.java.PhyloTreeParser")
     }
     doFirst {
         from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }

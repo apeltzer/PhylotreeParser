@@ -24,7 +24,7 @@ public class ViewTree extends Application{
         primaryStage.setTitle("Tree View Sample");
 
 
-        TreeItem<String> finalTree = TreeItemCreationContentHandler.getFinalTree();
+        TreeItem<String> finalTree = PhyloTreeParser.getFinalTree();
 
         finalTree.setExpanded(true);
 
