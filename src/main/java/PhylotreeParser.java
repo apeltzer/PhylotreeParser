@@ -141,8 +141,8 @@ public class PhylotreeParser {
 
     public void postOrder(TreeItem root) {
         if(root !=  null) {
-            postOrder(root.left);
-            postOrder(root.right);
+       //     postOrder(root.left);
+       //     postOrder(root.right);
 
             // todo: do something with the node here
         }
