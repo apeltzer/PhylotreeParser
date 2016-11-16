@@ -118,4 +118,24 @@ public class PhylotreeParser {
 
 
     }
+
+    /**
+     * Method to update index array.
+     * Deletes all indices which are not needed anymore.
+     *
+     * @param index_array
+     * @param level
+     * @return
+     */
+    public String[] updateIndices(String[] index_array, int level){
+
+        String[] index_new = new String[level];
+        for(int i = 0; i < level; i++){
+            index_new[i] = index_array[i];
+        }
+
+        return index_new;
+
+
+    }
 }
