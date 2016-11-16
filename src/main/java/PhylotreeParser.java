@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by peltzer on 04/11/2016.
@@ -71,10 +72,12 @@ public class PhylotreeParser {
 
         TreeItem rootItem = new TreeItem("RSRS");
         rootItem.setExpanded(true);
+        List<String> index_array = new ArrayList();
 
         for(String array : entries){
             int index = getLevel(array);
             String haplogroup = getHaplogroup(array);
+            index_array.add(haplogroup);
             System.out.println(index + "\n");
         }
 
@@ -127,15 +130,8 @@ public class PhylotreeParser {
      * @param level
      * @return
      */
-    public String[] updateIndices(String[] index_array, int level){
-
-        String[] index_new = new String[level];
-        for(int i = 0; i < level; i++){
-            index_new[i] = index_array[i];
-        }
-
-        return index_new;
-
+    public List<String> updateIndices(List<String> index_array, int level){
+        return index_array.subList(0,level);
 
     }
 }
