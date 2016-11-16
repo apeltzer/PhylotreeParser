@@ -66,7 +66,7 @@ public class PhyloTreeParser extends DefaultHandler {
         return finalTree;
     }
 
-    private static boolean contains(TreeItem<String> tree, String id){
+    public static boolean contains(TreeItem<String> tree, String id){
         boolean tmp = false;
         TreeIterator<String> iterator = new TreeIterator<>(tree);
 
@@ -79,22 +79,4 @@ public class PhyloTreeParser extends DefaultHandler {
     }
 
 
-
-    @Test
-    public void test_subtree_h2() throws ParserConfigurationException, SAXException, IOException {
-        getFinalTree();
-        assertEquals(contains(finalTree, "H2a2a1"), true);
-    }
-
-    @Test
-    public void test_subtree_h36() throws ParserConfigurationException, SAXException, IOException {
-       getFinalTree();
-       assertEquals(contains(finalTree, "H36"), true);
-    }
-
-    @Test
-    public void test_subtree_u6() throws ParserConfigurationException, SAXException, IOException {
-        getFinalTree();
-        assertEquals(contains(finalTree, "U6"), true);
-    }
 }
