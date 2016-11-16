@@ -1,5 +1,8 @@
 
+import javafx.application.Platform;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -35,7 +38,7 @@ public class PhylotreeParser {
 
 
     private void parseFile(File f) throws IOException {
-        //We require a CSV file as input, get this by storign the HTML table (single file), open it in Excel as HTML -> save as CSV and you're done!
+        //We require a CSV file as input, get this by storing the HTML table (single file), open it in Excel as HTML -> save as CSV and you're done!
         //The ";" array size determines where to place a file correctly in our Tree
         fr = new FileReader(f);
         bfr = new BufferedReader(fr);
@@ -67,13 +70,22 @@ public class PhylotreeParser {
          */
 
         TreeItem rootItem = new TreeItem("RSRS");
+        rootItem.setExpanded(true);
 
         for(String array : entries){
             int index = getLevel(array);
             String haplogroup = getHaplogroup(array);
             System.out.println(index + "\n");
-
         }
+
+        TreeView<String> tree = new TreeView<>(rootItem);
+        // enable multiple selection of leaves
+        tree.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tree.getSelectionModel().selectedItemProperty().addListener((c, oldValue, newValue) -> {
+            if (newValue != null && !newValue.isLeaf()) {
+                Platform.runLater(() -> tree.getSelectionModel().clearSelection());
+            }
+        });
 
     }
 
