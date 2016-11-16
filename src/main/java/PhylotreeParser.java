@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by peltzer on 04/11/2016.
@@ -70,8 +72,8 @@ public class PhylotreeParser {
 
         for(String array : entries){
             int index = getLevel(array);
-            String haplogroup = getHaplogroup(array);
-            System.out.println(index + "\n");
+            //String haplogroup = getHaplogroup(array);
+            //System.out.println(index + "\n");
 
         }
 
@@ -100,8 +102,8 @@ public class PhylotreeParser {
      * @return
      */
     public String getHaplogroup(String s){
-        s.replaceFirst("^;","");
-        String[] splitted = s.split(";");
+        String tmp = s.replaceFirst("^;*","");
+        String[] splitted = tmp.split(";");
         return splitted[0];
 
 
