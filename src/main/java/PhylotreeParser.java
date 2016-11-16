@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by peltzer on 04/11/2016.
@@ -69,13 +67,22 @@ public class PhylotreeParser {
          */
 
         TreeItem rootItem = new TreeItem("RSRS");
+        rootItem.setExpanded(true);
 
         for(String array : entries){
             int index = getLevel(array);
-            //String haplogroup = getHaplogroup(array);
-            //System.out.println(index + "\n");
-
+            String haplogroup = getHaplogroup(array);
+            System.out.println(index + "\n");
         }
+
+        TreeView<String> tree = new TreeView<>(rootItem);
+        // enable multiple selection of leaves
+        tree.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tree.getSelectionModel().selectedItemProperty().addListener((c, oldValue, newValue) -> {
+            if (newValue != null && !newValue.isLeaf()) {
+                Platform.runLater(() -> tree.getSelectionModel().clearSelection());
+            }
+        });
 
     }
 
@@ -105,6 +112,26 @@ public class PhylotreeParser {
         String tmp = s.replaceFirst("^;*","");
         String[] splitted = tmp.split(";");
         return splitted[0];
+
+
+    }
+
+    /**
+     * Method to update index array.
+     * Deletes all indices which are not needed anymore.
+     *
+     * @param index_array
+     * @param level
+     * @return
+     */
+    public String[] updateIndices(String[] index_array, int level){
+
+        String[] index_new = new String[level];
+        for(int i = 0; i < level; i++){
+            index_new[i] = index_array[i];
+        }
+
+        return index_new;
 
 
     }
