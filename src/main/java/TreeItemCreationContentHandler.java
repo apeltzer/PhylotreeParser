@@ -1,9 +1,5 @@
-import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
+import org.junit.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -14,6 +10,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
 
 public class TreeItemCreationContentHandler extends DefaultHandler {
     private  static TreeItem<String> finalTree = null;
@@ -42,12 +40,6 @@ public class TreeItemCreationContentHandler extends DefaultHandler {
 
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
-        //Probably not required, we dont want the polymorphisms in our TreeItem<String>
-       // String s = String.valueOf(ch, start, length).trim();
-       // if (!s.isEmpty()) {
-       //     // add text content as new child
-       //     this.item.getChildren().add(new TreeItem<>(s));
-       // }
     }
 
 
@@ -72,5 +64,37 @@ public class TreeItemCreationContentHandler extends DefaultHandler {
     public static TreeItem<String> getFinalTree() throws IOException, SAXException, ParserConfigurationException {
         readData();
         return finalTree;
+    }
+
+    private static boolean contains(TreeItem<String> tree, String id){
+        boolean tmp = false;
+        TreeIterator<String> iterator = new TreeIterator<>(tree);
+
+        while (iterator.hasNext()) {
+            if(iterator.next().getValue().equals(id)){
+                return true;
+            }
+        }
+
+
+        return tmp;
+    }
+
+    @Test
+    public void test_subtree_h2() throws ParserConfigurationException, SAXException, IOException {
+        getFinalTree();
+        assertEquals(contains(finalTree, "H2a2a1"), true);
+    }
+
+    @Test
+    public void test_subtree_h36() throws ParserConfigurationException, SAXException, IOException {
+       getFinalTree();
+       assertEquals(contains(finalTree, "H36"), true);
+    }
+
+    @Test
+    public void test_subtree_u6() throws ParserConfigurationException, SAXException, IOException {
+        getFinalTree();
+        assertEquals(contains(finalTree, "U6"), true);
     }
 }
