@@ -75,10 +75,10 @@ public class TreeItemCreationContentHandler extends DefaultHandler {
                 return true;
             }
         }
-
-
         return tmp;
     }
+
+
 
     @Test
     public void test_subtree_h2() throws ParserConfigurationException, SAXException, IOException {
