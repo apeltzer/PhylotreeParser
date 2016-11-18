@@ -1,9 +1,26 @@
 group 'com.uni-tuebingen.de.it.mitobench.phylotreeparser'
-version '0.1'
+version '0.2'
 
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'jacoco'
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.1'
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'jacoco'
+}
 
 sourceCompatibility = 1.8
 
@@ -33,7 +50,7 @@ dependencies {
 jar {
     manifest {
         attributes("Implementation-Title": "PhyloTreeParser",
-                "Implementation-Version": version, "main-Class": "main.java.PhyloTreeParser")
+                "Implementation-Version": version)
     }
     doFirst {
         from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
@@ -45,31 +62,18 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.1'
-    }
+
+artifacts {
+    archives sourcesJar //, javadocJar
 }
 
-allprojects {
-    repositories {
-        jcenter()
-    }
-    apply plugin: 'maven'
-    apply plugin: 'maven-publish'
-    apply plugin: 'java'
-    apply plugin: 'idea'
-    apply plugin: 'com.jfrog.bintray'
-}
+
 
 publishing {
     publications {
         MyPublication(MavenPublication) {
             from components.java
-            groupId 'com.uni-tuebingen.de.it.mitobench.phylotreeparser'
+            groupId 'com.uni-tuebingen.de.it.mitobench'
             artifactId 'PhyloTreeParser'
             artifact sourcesJar {
                 classifier "sources"
@@ -93,7 +97,7 @@ bintray {
     override = true
     pkg {
         repo = 'Mitobench'
-        name = 'Phylotree'
+        name = 'PhyloTreeParser'
         licenses = ['GPL-3.0']
         vcsUrl = "https://github.com/apeltzer/PhyloTreeParser"
         version {
@@ -107,6 +111,3 @@ bintray {
     }
 }
 
-artifacts {
-    archives sourcesJar //, javadocJar
-}
