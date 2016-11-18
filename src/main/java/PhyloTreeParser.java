@@ -1,25 +1,24 @@
 import javafx.scene.control.TreeItem;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PhyloTreeParser extends DefaultHandler {
 
-    private static BufferedReader bfr ;
-    private static FileReader fr;
-    private  static TreeItem<String> finalTree = null;
+    private BufferedReader bfr ;
+    private InputStreamReader fr;
+    private TreeItem<String> finalTree = null;
 
 
-    private static void parseFile() throws IOException {
-        File file = new File("src/test/resources/mtdnacsv.csv");
+    private void parseFile() throws IOException {
+        InputStream inputStream = getClass().getResourceAsStream("mtdnacsv.csv");
+
+       // File file = new File(getClass().getResourceAsStream("mtdnacsv.csv"));
         //We require a CSV file as input, get this by storign the HTML table (single file), open it in Excel as HTML -> save as CSV and you're done!
         //The ";" array size determines where to place a file correctly in our Tree
-        fr = new FileReader(file);
+        fr = new InputStreamReader(inputStream);
         bfr = new BufferedReader(fr);
 
         ArrayList<String> entries = new ArrayList<String>();
@@ -105,7 +104,7 @@ public class PhyloTreeParser extends DefaultHandler {
      * @param s
      * @return
      */
-    public static int getLevel(String s){
+    public int getLevel(String s){
         if(!s.startsWith(";")){
             System.out.println("");
         }
@@ -142,7 +141,7 @@ public class PhyloTreeParser extends DefaultHandler {
      * @param level
      * @return
      */
-    public static List<TreeItem> updateIndices(List<TreeItem> index_array, int level){
+    public List<TreeItem> updateIndices(List<TreeItem> index_array, int level){
         return index_array.subList(0,level); //sublist is (inclusive, exclusive)
 
     }
@@ -154,13 +153,13 @@ public class PhyloTreeParser extends DefaultHandler {
      * @return
      * @throws IOException
      */
-    public static TreeItem<String> getFinalTree() throws IOException{
+    public TreeItem<String> getFinalTree() throws IOException{
         parseFile();
         return finalTree;
     }
 
 
-    public static boolean contains(TreeItem<String> tree, String id){
+    public boolean contains(TreeItem<String> tree, String id){
         boolean tmp = false;
         TreeIterator<String> iterator = new TreeIterator<>(tree);
 

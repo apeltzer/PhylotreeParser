@@ -70,7 +70,7 @@ publishing {
         MyPublication(MavenPublication) {
             from components.java
             groupId 'com.uni-tuebingen.de.it.mitobench.phylotreeparser'
-            artifactId 'DeDup'
+            artifactId 'PhylotreeParser'
         }
     }
 }
@@ -89,8 +89,8 @@ bintray {
     publish = true
     override = true
     pkg {
-        repo = 'EAGER'
-        name = 'DeDup'
+        repo = 'Mitobench'
+        name = 'Phylotree'
         licenses = ['GPL-3.0']
         vcsUrl = "https://github.com/apeltzer/PhyloTreeParser"
         version {
