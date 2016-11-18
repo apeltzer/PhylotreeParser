@@ -70,7 +70,7 @@ publishing {
         MyPublication(MavenPublication) {
             from components.java
             groupId 'com.uni-tuebingen.de.it.mitobench.phylotreeparser'
-            artifactId 'PhylotreeParser'
+            artifactId 'PhyloTreeParser'
             artifact sourcesJar {
                 classifier "sources"
             }
