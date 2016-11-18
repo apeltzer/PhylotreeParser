@@ -1,70 +1,164 @@
 import javafx.scene.control.TreeItem;
-import org.junit.Test;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PhyloTreeParser extends DefaultHandler {
+
+    private static BufferedReader bfr ;
+    private static FileReader fr;
     private  static TreeItem<String> finalTree = null;
 
-    private TreeItem<String> item = new TreeItem<>();
 
+    private static void parseFile() throws IOException {
+        File file = new File("src/test/resources/mtdnacsv.csv");
+        //We require a CSV file as input, get this by storign the HTML table (single file), open it in Excel as HTML -> save as CSV and you're done!
+        //The ";" array size determines where to place a file correctly in our Tree
+        fr = new FileReader(file);
+        bfr = new BufferedReader(fr);
 
-    @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException {
-        // finish this node by going back to the parent
-        if(qName.equals("haplogroup")){
-            this.item = this.item.getParent();
+        ArrayList<String> entries = new ArrayList<String>();
+        String currline = "";
+
+        int startindex = 0;
+
+        while((currline = bfr.readLine()) != null){
+            //Ignore first 18 lines, ignore lines consisting solely of ";;;;;;;;;;;;;;;;;;;;;;;;;;"
+            if((startindex < 18) || (currline.equals(";;;;;;;;;;;;;;;;;;;;;;;;;;"))){
+                startindex++;
+                continue;
+            } else {
+                entries.add(currline);
+            }
         }
-    }
 
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        // start a new node and use it as the current item
-        if(qName.equals("haplogroup")){
-            TreeItem<String> item = new TreeItem<>(attributes.getValue("name"));
-            this.item.getChildren().add(item);
-            this.item = item;
+
+        /**
+         * We have now cleared items here in the list and can start creating our tree.
+         * There are three cases for tree traversal:
+         *
+         * - keep current level in the index, add other nodes to the current parent, repeat till end or level changes
+         * - if level up -> add children to former node, start new parent node
+         * - if level down -> continue going down, add to parent of current node
+         * - ideally recursive function or something like this (!)
+         */
+
+        TreeItem rootItem = new TreeItem("RSRS");
+        rootItem.setExpanded(true);
+        List<TreeItem> tree_items = new ArrayList<TreeItem>();
+        tree_items.add(rootItem);
+
+
+        // iterate post-order through tree
+        int currIndex = 0;
+        int formerIndex = 0;
+
+        for(String array : entries) {
+            if(array.length() != 0){
+                currIndex = getLevel(array);
+                String haplogroup = getHaplogroup(array);
+                if(haplogroup.equals("L0d")){
+                    System.out.println("");
+                }
+                TreeItem<String> item = new TreeItem<>(haplogroup);
+
+                if(currIndex == 0) { // can only happen in the initialization phase (for L0, and L1'2'3'4'5'6')
+                    rootItem.getChildren().add(item);
+                    // update tree_item, set only rootItem
+                    List<TreeItem> back_me_up = tree_items;
+                    tree_items = updateIndices(back_me_up,1); // Update our "pointer" list
+                    tree_items.add(item);
+                    formerIndex = currIndex;
+                    continue;
+                }
+
+                if (currIndex > formerIndex) { //then we are going down one level
+                    tree_items.get(tree_items.size()-1).getChildren().add(item);
+                    tree_items.add(item);
+                    formerIndex = currIndex;
+
+                } else if (currIndex == formerIndex) { //then we are in the same level with our sibling node
+                    tree_items.get(tree_items.size()-1).getParent().getChildren().add(item);
+                    tree_items.add(item);
+
+                } else if (currIndex < formerIndex) { // then we are done traversing and have to go one level up again
+                    formerIndex = currIndex;
+                    List<TreeItem> back_me_up = tree_items;
+                    tree_items = updateIndices(back_me_up,currIndex+1); // Update our "pointer" list
+                    tree_items.get(tree_items.size()-1).getChildren().add(item);
+                    tree_items.add(item);
+                }
+            }
         }
 
+        finalTree = rootItem;
     }
 
-    @Override
-    public void characters(char[] ch, int start, int length) throws SAXException {
+    /**
+     * Method returns the leading ";" symbols count of each line on search. This is used to determine where we are in our CSV tree in the end.
+     *
+     * @param s
+     * @return
+     */
+    public static int getLevel(String s){
+        if(!s.startsWith(";")){
+            System.out.println("");
+        }
+        int level = 0;
+        for (int i = 0; i <= s.length(); i++){
+            if(s.length()!=0 && s.charAt(i) == ';'){
+                level++;
+            } else {
+                return level;
+            }
+        }
+        return level;
+    }
+
+    /**
+     * Method to return hpalogroup string
+     *
+     * @param s
+     * @return
+     */
+    public static String getHaplogroup(String s){
+        String tmp = s.replaceFirst("^;*","");
+        String[] splitted = tmp.split(";");
+        return splitted[0];
+
+
+    }
+
+    /**
+     * Method to update index array.
+     * Deletes all indices which are not needed anymore.
+     *
+     * @param index_array
+     * @param level
+     * @return
+     */
+    public static List<TreeItem> updateIndices(List<TreeItem> index_array, int level){
+        return index_array.subList(0,level); //sublist is (inclusive, exclusive)
+
     }
 
 
-    private static TreeItem<String> readData() throws SAXException, ParserConfigurationException, IOException {
-        File file = new File("src/test/resources/phylotree17.xml");
-        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-        SAXParser parser = parserFactory.newSAXParser();
-        XMLReader reader = parser.getXMLReader();
-        PhyloTreeParser contentHandler = new PhyloTreeParser();
-
-        // parse file using the content handler to create a TreeItem representation
-        reader.setContentHandler(contentHandler);
-        reader.parse(file.toURI().toString());
-
-        // use first child as root (the TreeItem initially created does not contain data from the file)
-        TreeItem<String> item = contentHandler.item.getChildren().get(0);
-        contentHandler.item.getChildren().clear();
-        finalTree = item;
-        return item;
-    }
-
-    public static TreeItem<String> getFinalTree() throws IOException, SAXException, ParserConfigurationException {
-        readData();
+    /**
+     * return finally parsed tree
+     *
+     * @return
+     * @throws IOException
+     */
+    public static TreeItem<String> getFinalTree() throws IOException{
+        parseFile();
         return finalTree;
     }
+
 
     public static boolean contains(TreeItem<String> tree, String id){
         boolean tmp = false;
@@ -77,6 +171,7 @@ public class PhyloTreeParser extends DefaultHandler {
         }
         return tmp;
     }
+
 
 
 }
