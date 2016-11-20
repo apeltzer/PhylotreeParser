@@ -15,7 +15,7 @@ public class PhyloTreeParser extends DefaultHandler {
 
 
     private void parseFile() throws IOException {
-        InputStream inputStream = getClass().getResourceAsStream("mtdnacsv.csv");
+        InputStream inputStream = getClass().getResourceAsStream("/mtdnacsv.csv");
 
        // File file = new File(getClass().getResourceAsStream("mtdnacsv.csv"));
         //We require a CSV file as input, get this by storign the HTML table (single file), open it in Excel as HTML -> save as CSV and you're done!
