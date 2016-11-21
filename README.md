@@ -1,6 +1,6 @@
 This is a basic parsing library for phylotree.org (v17 has been tested properly). 
 
-[![Build Status](https://lambda.informatik.uni-tuebingen.de/jenkins/view/MitoBench/job/PhylotreeParser/badge/icon)](https://lambda.informatik.uni-tuebingen.de/jenkins/view/MitoBench/job/PhylotreeParser/)
+[![Build Status](https://lambda.informatik.uni-tuebingen.de/jenkins/buildStatus/icon?job=PhylotreeParser)](https://lambda.informatik.uni-tuebingen.de/jenkins/view/MitoBench/job/PhylotreeParser/)
 [![codecov](https://codecov.io/gh/apeltzer/PhylotreeParser/branch/master/graph/badge.svg?token=qCvQJkwvd4)](https://codecov.io/gh/apeltzer/PhylotreeParser)
 
 
