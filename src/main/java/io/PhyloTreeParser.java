@@ -63,9 +63,6 @@ public class PhyloTreeParser extends DefaultHandler {
             if(array.length() != 0){
                 currIndex = getLevel(array);
                 String haplogroup = getHaplogroup(array);
-                if(haplogroup.equals("L0d")){
-                    System.out.println("");
-                }
                 TreeItem<String> item = new TreeItem<>(haplogroup);
 
                 if(currIndex == 0) { // can only happen in the initialization phase (for L0, and L1'2'3'4'5'6')
@@ -85,7 +82,8 @@ public class PhyloTreeParser extends DefaultHandler {
 
                 } else if (currIndex == formerIndex) { //then we are in the same level with our sibling node
                     tree_items.get(tree_items.size()-1).getParent().getChildren().add(item);
-                    tree_items.add(item);
+                    // replace last item in treeItemList
+                    tree_items.set(tree_items.size()-1, item);
 
                 } else if (currIndex < formerIndex) { // then we are done traversing and have to go one level up again
                     formerIndex = currIndex;
