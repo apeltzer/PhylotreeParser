@@ -12,9 +12,11 @@ public class PhyloTreeParser extends DefaultHandler {
     private BufferedReader bfr ;
     private InputStreamReader fr;
     private TreeItem<String> finalTree = null;
+    private MutationParser mutationParser;
 
 
     private void parseFile() throws IOException {
+        mutationParser = new MutationParser();
         InputStream inputStream = getClass().getResourceAsStream("/mtdnacsv.csv");
 
        // File file = new File(getClass().getResourceAsStream("mtdnacsv.csv"));
@@ -62,6 +64,7 @@ public class PhyloTreeParser extends DefaultHandler {
         for(String array : entries) {
             if(array.length() != 0){
                 currIndex = getLevel(array);
+                mutationParser.addHaplogroupWithMutations(array, currIndex);
                 String haplogroup = getHaplogroup(array);
                 TreeItem<String> item = new TreeItem<>(haplogroup);
 
@@ -172,5 +175,7 @@ public class PhyloTreeParser extends DefaultHandler {
     }
 
 
-
+    public MutationParser getMutationParser() {
+        return mutationParser;
+    }
 }
