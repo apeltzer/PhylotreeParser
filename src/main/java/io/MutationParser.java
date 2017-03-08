@@ -30,10 +30,11 @@ public class MutationParser {
 
         if(line_splitted.length>=2){
             String hg = line_splitted[0];
-            String[] mutations = line_splitted[1].trim().split(" ");
+            String[] mutations = line_splitted[1].trim().split("  ");
+
             hg_to_mutation.put(hg, mutations);
             for(String mut : mutations){
-                if(mut.length()>0){
+                if(mut.length()>1){
                     mut = mut.trim();
                     if(mutation_to_hg.keySet().contains(mut)){
                         List<String> entries = mutation_to_hg.get(mut);
