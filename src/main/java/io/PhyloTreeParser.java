@@ -102,15 +102,13 @@ public class PhyloTreeParser extends DefaultHandler {
     }
 
     /**
-     * Method returns the leading ";" symbols count of each line on search. This is used to determine where we are in our CSV tree in the end.
+     * Method returns the leading ";" symbols count of each line on search.
+     * This is used to determine where we are in our CSV tree in the end.
      *
      * @param s
      * @return
      */
     public int getLevel(String s){
-        if(!s.startsWith(";")){
-            System.out.println("");
-        }
         int level = 0;
         for (int i = 0; i <= s.length(); i++){
             if(s.length()!=0 && s.charAt(i) == ';'){
@@ -132,8 +130,6 @@ public class PhyloTreeParser extends DefaultHandler {
         String tmp = s.replaceFirst("^;*","");
         String[] splitted = tmp.split(";");
         return splitted[0];
-
-
     }
 
     /**
@@ -162,6 +158,12 @@ public class PhyloTreeParser extends DefaultHandler {
     }
 
 
+    /**
+     * This method returns true, if item with id exists in tree.
+     * @param tree
+     * @param id
+     * @return
+     */
     public boolean contains(TreeItem<String> tree, String id){
         boolean tmp = false;
         TreeIterator<String> iterator = new TreeIterator<>(tree);
