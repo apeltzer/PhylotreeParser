@@ -1,5 +1,5 @@
 group 'com.uni-tuebingen.de.it.mitobench.phylotreeparser'
-version '0.4'
+version '0.4.1'
 
 buildscript {
     repositories {
