@@ -24,15 +24,21 @@ public class MutationParser {
      * @param entry
      * @param currIndex
      */
-    public void addHaplogroupWithMutations(String entry, int currIndex){
+    public void addHaplogroupWithMutations(String entry, int currIndex, String[] previousMutations){
         String line = entry.substring(currIndex);
         String[] line_splitted = line.split(";");
 
-        if(line_splitted.length>=2){
+        if(line_splitted.length>=1){
             String hg = line_splitted[0];
-            String[] mutations = line_splitted[1].trim().split("  ");
+            String[] mutations;
+            if(line_splitted.length==1 || line_splitted[1].trim().equals("")){
+                mutations = new String[]{line_splitted[0]};
+            } else {
+                mutations = line_splitted[1].trim().split("  ");
+            }
 
-            hg_to_mutation.put(hg, mutations);
+            String[] mutations_all = concat(mutations, previousMutations);
+            hg_to_mutation.put(hg, mutations_all);
             for(String mut : mutations){
                 if(mut.length()>1){
                     mut = mut.trim();
@@ -50,6 +56,17 @@ public class MutationParser {
         }
     }
 
+
+    public String[] concat(String[] a, String[] b) {
+
+        int aLen = a.length;
+        int bLen = b.length;
+        String[] c = new String[aLen+bLen];
+        System.arraycopy(a, 0, c, 0, aLen);
+        System.arraycopy(b, 0, c, aLen, bLen);
+        return c;
+
+    }
 
     public HashMap<String, List<String>> getMutation_to_hg() {
         return mutation_to_hg;

@@ -13,7 +13,7 @@ public class PhyloTreeParser extends DefaultHandler {
     private InputStreamReader fr;
     private TreeItem<String> finalTree = null;
     private MutationParser mutationParser;
-
+    private List<String> hgs_prev = new ArrayList<>();
 
     private void parseFile() throws IOException {
         mutationParser = new MutationParser();
@@ -61,11 +61,13 @@ public class PhyloTreeParser extends DefaultHandler {
         int currIndex = 0;
         int formerIndex = 0;
 
+
         for(String array : entries) {
             if(array.length() != 0){
                 currIndex = getLevel(array);
-                mutationParser.addHaplogroupWithMutations(array, currIndex);
+                //mutationParser.addHaplogroupWithMutations(array, currIndex);
                 String haplogroup = getHaplogroup(array);
+                hgs_prev.add(haplogroup);
                 TreeItem<String> item = new TreeItem<>(haplogroup);
 
                 if(currIndex == 0) { // can only happen in the initialization phase (for L0, and L1'2'3'4'5'6')
@@ -75,11 +77,14 @@ public class PhyloTreeParser extends DefaultHandler {
                     tree_items = updateIndices(back_me_up,1); // Update our "pointer" list
                     tree_items.add(item);
                     formerIndex = currIndex;
+                    mutationParser.addHaplogroupWithMutations(array, currIndex, new String[]{});
                     continue;
                 }
 
                 if (currIndex > formerIndex) { //then we are going down one level
                     tree_items.get(tree_items.size()-1).getChildren().add(item);
+                    String key = (String)tree_items.get(tree_items.size()-1).getValue();
+                    mutationParser.addHaplogroupWithMutations(array, currIndex, mutationParser.getHg_to_mutation().get(key));
                     tree_items.add(item);
                     formerIndex = currIndex;
 
@@ -87,15 +92,21 @@ public class PhyloTreeParser extends DefaultHandler {
                     tree_items.get(tree_items.size()-1).getParent().getChildren().add(item);
                     // replace last item in treeItemList
                     tree_items.set(tree_items.size()-1, item);
+                    String key = (String)tree_items.get(tree_items.size()-2).getValue();
+                    mutationParser.addHaplogroupWithMutations(array, currIndex, mutationParser.getHg_to_mutation().get(key));
 
                 } else if (currIndex < formerIndex) { // then we are done traversing and have to go one level up again
                     formerIndex = currIndex;
                     List<TreeItem> back_me_up = tree_items;
                     tree_items = updateIndices(back_me_up,currIndex+1); // Update our "pointer" list
                     tree_items.get(tree_items.size()-1).getChildren().add(item);
+                    String key = (String)tree_items.get(tree_items.size()-1).getValue();
+                    mutationParser.addHaplogroupWithMutations(array, currIndex, mutationParser.getHg_to_mutation().get(key));
                     tree_items.add(item);
                 }
+
             }
+
         }
 
         finalTree = rootItem;
