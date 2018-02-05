@@ -17,7 +17,8 @@ public class PhyloTreeParser extends DefaultHandler {
 
     private void parseFile() throws IOException {
         mutationParser = new MutationParser();
-        InputStream inputStream = getClass().getResourceAsStream("/mtdnacsv.csv");
+       // InputStream inputStream = getClass().getResourceAsStream("/mtdnacsv.csv");
+        InputStream inputStream = getClass().getResourceAsStream("/mtDNA_tree_17_rCRSoriented.csv");
 
        // File file = new File(getClass().getResourceAsStream("mtdnacsv.csv"));
         //We require a CSV file as input, get this by storign the HTML table (single file), open it in Excel as HTML -> save as CSV and you're done!
@@ -31,8 +32,8 @@ public class PhyloTreeParser extends DefaultHandler {
         int startindex = 0;
 
         while((currline = bfr.readLine()) != null){
-            //Ignore first 18 lines, ignore lines consisting solely of ";;;;;;;;;;;;;;;;;;;;;;;;;;"
-            if((startindex < 18) || (currline.equals(";;;;;;;;;;;;;;;;;;;;;;;;;;"))){
+            //Ignore first 15 lines, ignore lines consisting solely of ";;;;;;;;;;;;;;;;;;;;;;;;;;"
+            if((startindex < 15) || (currline.equals(";;;;;;;;;;;;;;;;;;;;;;;;;;"))){
                 startindex++;
                 continue;
             } else {
@@ -51,7 +52,7 @@ public class PhyloTreeParser extends DefaultHandler {
          * - ideally recursive function or something like this (!)
          */
 
-        TreeItem rootItem = new TreeItem("RSRS");
+        TreeItem rootItem = new TreeItem("rCRS");
         rootItem.setExpanded(true);
         List<TreeItem> tree_items = new ArrayList<TreeItem>();
         tree_items.add(rootItem);
