@@ -52,7 +52,7 @@ public class PhyloTreeParser extends DefaultHandler {
          * - ideally recursive function or something like this (!)
          */
 
-        TreeItem rootItem = new TreeItem("rCRS");
+        TreeItem rootItem = new TreeItem("mtMRCA");
         rootItem.setExpanded(true);
         List<TreeItem> tree_items = new ArrayList<TreeItem>();
         tree_items.add(rootItem);
