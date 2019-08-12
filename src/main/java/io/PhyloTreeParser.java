@@ -141,6 +141,7 @@ public class PhyloTreeParser extends DefaultHandler {
     public static String getHaplogroup(String s){
         String tmp = s.replaceFirst("^;*","");
         String[] splitted = tmp.split(";");
+
         return splitted[0];
     }
 
